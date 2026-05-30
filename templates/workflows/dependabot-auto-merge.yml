@@ -4,6 +4,12 @@ on:
   pull_request:
     types: [opened, synchronize, reopened]
 
+# One auto-merge run per PR at a time; do not cancel in-progress
+# (cancelling mid-merge could leave a PR in a broken state)
+concurrency:
+  group: dependabot-auto-merge-${{ github.event.pull_request.number }}
+  cancel-in-progress: false
+
 permissions:
   contents: write
   pull-requests: write
@@ -12,6 +18,7 @@ jobs:
   auto-merge:
     name: Auto-merge Dependabot PRs
     runs-on: ubuntu-latest
+    # Only act on PRs opened by Dependabot
     if: github.actor == 'dependabot[bot]'
 
     steps:
@@ -21,6 +28,9 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
+      # Approve patch and minor bumps.
+      # PREREQUISITE: Settings → Actions → General → "Allow GitHub Actions to
+      # create and approve pull requests" must be enabled, or this step fails.
       - name: Approve PR
         if: |
           steps.metadata.outputs.update-type == 'version-update:semver-patch' ||
@@ -30,6 +40,9 @@ jobs:
           PR_URL: ${{ github.event.pull_request.html_url }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+      # Enable auto-merge; the PR will only merge once all required status
+      # checks pass (enforced by your branch ruleset from Skill 01).
+      # WARNING: if no status checks are required, this merges immediately.
       - name: Enable auto-merge
         if: |
           steps.metadata.outputs.update-type == 'version-update:semver-patch' ||
