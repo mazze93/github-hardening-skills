@@ -1,7 +1,7 @@
 # github-hardening-skills
 
 > Idempotent, transferable skills for hardening GitHub repositories.
-> Each skill is a self-contained runbook: branch protection, Dependabot, auto-merge, CI, and repo settings.
+> Each skill is a self-contained runbook: branch protection, Dependabot, auto-merge, CI, repo settings, and security policy.
 
 ---
 
@@ -25,6 +25,7 @@ Every skill document is:
 | 03 | [Dependabot Auto-merge](skills/03-dependabot-auto-merge.md) | Workflow to auto-approve and merge patch/minor PRs |
 | 04 | [CI Workflow](skills/04-ci-workflow.md) | Node.js CI with matrix builds, npm ci, build, test |
 | 05 | [Repo Settings](skills/05-repo-settings.md) | General settings hardening: merge methods, branch cleanup, release immutability, push limits |
+| 06 | [Security Policy](skills/06-security-policy.md) | `SECURITY.md` setup, private vulnerability reporting, scope and disclosure policy |
 
 ---
 
@@ -34,9 +35,10 @@ Drop-in config files ready to copy into any repo:
 
 ```
 templates/
-  dependabot.yml                          → .github/dependabot.yml
-  workflows/ci.yml                        → .github/workflows/ci.yml
-  workflows/dependabot-auto-merge.yml     → .github/workflows/dependabot-auto-merge.yml
+  SECURITY.md                          → SECURITY.md (or .github/SECURITY.md)
+  dependabot.yml                       → .github/dependabot.yml
+  workflows/ci.yml                     → .github/workflows/ci.yml
+  workflows/dependabot-auto-merge.yml  → .github/workflows/dependabot-auto-merge.yml
 ```
 
 ---
@@ -57,6 +59,7 @@ Or clone the repo and reference skill files in your system prompt or context win
 ```bash
 # Copy all templates into an existing repo
 git clone https://github.com/mazze93/github-hardening-skills
+cp github-hardening-skills/templates/SECURITY.md ./SECURITY.md
 cp github-hardening-skills/templates/dependabot.yml .github/dependabot.yml
 cp github-hardening-skills/templates/workflows/ci.yml .github/workflows/ci.yml
 cp github-hardening-skills/templates/workflows/dependabot-auto-merge.yml .github/workflows/dependabot-auto-merge.yml
@@ -66,7 +69,7 @@ cp github-hardening-skills/templates/workflows/dependabot-auto-merge.yml .github
 
 ## Design principles
 
-- **Minimal blast radius** — each skill is scoped; applying one doesn’t break another
+- **Minimal blast radius** — each skill is scoped; applying one doesn't break another
 - **Explicit over implicit** — every permission, scope, and setting is named and reasoned
 - **Security-first defaults** — recommend least-privilege, signed commits, no force pushes
 - **No magic** — every step is visible and reversible
@@ -75,4 +78,4 @@ cp github-hardening-skills/templates/workflows/dependabot-auto-merge.yml .github
 
 ## License
 
-MIT — use freely, adapt for your org, share with attribution.
+MIT
